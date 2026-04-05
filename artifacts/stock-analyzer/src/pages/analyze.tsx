@@ -11,7 +11,7 @@ import { Gauge } from "@/components/ui/gauge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookmarkPlus, Loader2, ArrowUpRight, ArrowDownRight, TrendingUp, AlertTriangle } from "lucide-react";
+import { BookmarkPlus, Loader2, ArrowUpRight, ArrowDownRight, TrendingUp, AlertTriangle, Activity } from "lucide-react";
 
 export default function Analyze() {
   const [location] = useLocation();
