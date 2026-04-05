@@ -8,3 +8,116 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface AnalyzeStockBody {
+  /** Stock ticker symbol (e.g. AAPL, TSLA) */
+  ticker: string;
+  /**
+   * Optional investment amount in USD for scenario calculations
+   * @nullable
+   */
+  investmentAmount?: number | null;
+  /**
+   * Investment time horizon (e.g. "1 month", "1 year", "5 years")
+   * @nullable
+   */
+  timeHorizon?: string | null;
+}
+
+export type StockAnalysisRiskLevel =
+  (typeof StockAnalysisRiskLevel)[keyof typeof StockAnalysisRiskLevel];
+
+export const StockAnalysisRiskLevel = {
+  low: "low",
+  moderate: "moderate",
+  high: "high",
+  very_high: "very_high",
+} as const;
+
+export type StockAnalysisSentiment =
+  (typeof StockAnalysisSentiment)[keyof typeof StockAnalysisSentiment];
+
+export const StockAnalysisSentiment = {
+  bullish: "bullish",
+  bearish: "bearish",
+  neutral: "neutral",
+} as const;
+
+export interface Scenario {
+  label: string;
+  percentChange: number;
+  description: string;
+}
+
+export interface StockAnalysis {
+  id: number;
+  ticker: string;
+  companyName: string;
+  /** Estimated probability of profit (0-100) */
+  successRatePercent: number;
+  riskLevel: StockAnalysisRiskLevel;
+  sentiment: StockAnalysisSentiment;
+  profitScenario: Scenario;
+  lossScenario: Scenario;
+  /** Detailed AI analysis text */
+  summary: string;
+  /** Key bullish/bearish factors */
+  keyFactors: string[];
+  /** Buy, Hold, or Sell recommendation */
+  recommendation: string;
+  createdAt: string;
+}
+
+export interface StockSearchResult {
+  ticker: string;
+  name: string;
+  sector: string;
+}
+
+export interface PopularStock {
+  ticker: string;
+  name: string;
+  sector: string;
+  description: string;
+}
+
+export interface WatchlistItem {
+  id: number;
+  ticker: string;
+  companyName: string;
+  addedAt: string;
+}
+
+export interface AddWatchlistItemBody {
+  ticker: string;
+  companyName: string;
+}
+
+export interface AnalysisSummary {
+  id: number;
+  ticker: string;
+  companyName: string;
+  successRatePercent: number;
+  riskLevel: string;
+  sentiment: string;
+  recommendation: string;
+  createdAt: string;
+}
+
+export interface AnalysisStats {
+  totalAnalyses: number;
+  avgSuccessRate: number;
+  bullishCount: number;
+  bearishCount: number;
+  neutralCount: number;
+  /** @nullable */
+  mostAnalyzedTicker: string | null;
+}
+
+export interface ApiError {
+  error: string;
+}
+
+export type SearchStocksParams = {
+  q: string;
+};

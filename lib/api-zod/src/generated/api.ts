@@ -14,3 +14,125 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary Analyze a stock ticker with AI
+ */
+export const AnalyzeStockBody = zod.object({
+  ticker: zod.string().describe("Stock ticker symbol (e.g. AAPL, TSLA)"),
+  investmentAmount: zod
+    .number()
+    .nullish()
+    .describe("Optional investment amount in USD for scenario calculations"),
+  timeHorizon: zod
+    .string()
+    .nullish()
+    .describe(
+      'Investment time horizon (e.g. \"1 month\", \"1 year\", \"5 years\")',
+    ),
+});
+
+export const AnalyzeStockResponse = zod.object({
+  id: zod.number(),
+  ticker: zod.string(),
+  companyName: zod.string(),
+  successRatePercent: zod
+    .number()
+    .describe("Estimated probability of profit (0-100)"),
+  riskLevel: zod.enum(["low", "moderate", "high", "very_high"]),
+  sentiment: zod.enum(["bullish", "bearish", "neutral"]),
+  profitScenario: zod.object({
+    label: zod.string(),
+    percentChange: zod.number(),
+    description: zod.string(),
+  }),
+  lossScenario: zod.object({
+    label: zod.string(),
+    percentChange: zod.number(),
+    description: zod.string(),
+  }),
+  summary: zod.string().describe("Detailed AI analysis text"),
+  keyFactors: zod.array(zod.string()).describe("Key bullish\/bearish factors"),
+  recommendation: zod.string().describe("Buy, Hold, or Sell recommendation"),
+  createdAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Search for stocks by name or ticker
+ */
+export const SearchStocksQueryParams = zod.object({
+  q: zod.coerce.string(),
+});
+
+export const SearchStocksResponseItem = zod.object({
+  ticker: zod.string(),
+  name: zod.string(),
+  sector: zod.string(),
+});
+export const SearchStocksResponse = zod.array(SearchStocksResponseItem);
+
+/**
+ * @summary Get a curated list of popular stocks
+ */
+export const GetPopularStocksResponseItem = zod.object({
+  ticker: zod.string(),
+  name: zod.string(),
+  sector: zod.string(),
+  description: zod.string(),
+});
+export const GetPopularStocksResponse = zod.array(GetPopularStocksResponseItem);
+
+/**
+ * @summary Get all watchlist items
+ */
+export const GetWatchlistResponseItem = zod.object({
+  id: zod.number(),
+  ticker: zod.string(),
+  companyName: zod.string(),
+  addedAt: zod.coerce.date(),
+});
+export const GetWatchlistResponse = zod.array(GetWatchlistResponseItem);
+
+/**
+ * @summary Add a stock to the watchlist
+ */
+export const AddToWatchlistBody = zod.object({
+  ticker: zod.string(),
+  companyName: zod.string(),
+});
+
+/**
+ * @summary Remove a stock from the watchlist
+ */
+export const RemoveFromWatchlistParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary Get the most recent stock analyses
+ */
+export const GetRecentAnalysesResponseItem = zod.object({
+  id: zod.number(),
+  ticker: zod.string(),
+  companyName: zod.string(),
+  successRatePercent: zod.number(),
+  riskLevel: zod.string(),
+  sentiment: zod.string(),
+  recommendation: zod.string(),
+  createdAt: zod.coerce.date(),
+});
+export const GetRecentAnalysesResponse = zod.array(
+  GetRecentAnalysesResponseItem,
+);
+
+/**
+ * @summary Get aggregate stats across all analyses
+ */
+export const GetAnalysisStatsResponse = zod.object({
+  totalAnalyses: zod.number(),
+  avgSuccessRate: zod.number(),
+  bullishCount: zod.number(),
+  bearishCount: zod.number(),
+  neutralCount: zod.number(),
+  mostAnalyzedTicker: zod.string().nullable(),
+});

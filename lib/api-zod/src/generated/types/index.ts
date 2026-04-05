@@ -6,4 +6,17 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./addWatchlistItemBody";
+export * from "./analysisStats";
+export * from "./analysisSummary";
+export * from "./analyzeStockBody";
+export * from "./apiError";
 export * from "./healthStatus";
+export * from "./popularStock";
+export * from "./scenario";
+export * from "./searchStocksParams";
+export * from "./stockAnalysis";
+export * from "./stockAnalysisRiskLevel";
+export * from "./stockAnalysisSentiment";
+export * from "./stockSearchResult";
+export * from "./watchlistItem";

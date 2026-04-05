@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: stocks
+    description: Stock analysis operations
+  - name: watchlist
+    description: Watchlist management
 paths:
   /healthz:
     get:
@@ -24,6 +28,155 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /stocks/analyze:
+    post:
+      operationId: analyzeStock
+      tags: [stocks]
+      summary: Analyze a stock ticker with AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeStockBody"
+      responses:
+        "200":
+          description: AI analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StockAnalysis"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /stocks/search:
+    get:
+      operationId: searchStocks
+      tags: [stocks]
+      summary: Search for stocks by name or ticker
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of matching stocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StockSearchResult"
+
+  /stocks/popular:
+    get:
+      operationId: getPopularStocks
+      tags: [stocks]
+      summary: Get a curated list of popular stocks
+      responses:
+        "200":
+          description: Popular stocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PopularStock"
+
+  /watchlist:
+    get:
+      operationId: getWatchlist
+      tags: [watchlist]
+      summary: Get all watchlist items
+      responses:
+        "200":
+          description: Watchlist
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WatchlistItem"
+    post:
+      operationId: addToWatchlist
+      tags: [watchlist]
+      summary: Add a stock to the watchlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddWatchlistItemBody"
+      responses:
+        "201":
+          description: Added item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WatchlistItem"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /watchlist/{id}:
+    delete:
+      operationId: removeFromWatchlist
+      tags: [watchlist]
+      summary: Remove a stock from the watchlist
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /analyses/recent:
+    get:
+      operationId: getRecentAnalyses
+      tags: [stocks]
+      summary: Get the most recent stock analyses
+      responses:
+        "200":
+          description: Recent analyses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnalysisSummary"
+
+  /analyses/stats:
+    get:
+      operationId: getAnalysisStats
+      tags: [stocks]
+      summary: Get aggregate stats across all analyses
+      responses:
+        "200":
+          description: Analysis stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +187,202 @@ components:
       required:
         - status
 
+    AnalyzeStockBody:
+      type: object
+      properties:
+        ticker:
+          type: string
+          description: Stock ticker symbol (e.g. AAPL, TSLA)
+        investmentAmount:
+          type: ["number", "null"]
+          description: Optional investment amount in USD for scenario calculations
+        timeHorizon:
+          type: ["string", "null"]
+          description: Investment time horizon (e.g. "1 month", "1 year", "5 years")
+      required:
+        - ticker
+
+    StockAnalysis:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        companyName:
+          type: string
+        successRatePercent:
+          type: number
+          description: Estimated probability of profit (0-100)
+        riskLevel:
+          type: string
+          enum: [low, moderate, high, very_high]
+        sentiment:
+          type: string
+          enum: [bullish, bearish, neutral]
+        profitScenario:
+          $ref: "#/components/schemas/Scenario"
+        lossScenario:
+          $ref: "#/components/schemas/Scenario"
+        summary:
+          type: string
+          description: Detailed AI analysis text
+        keyFactors:
+          type: array
+          items:
+            type: string
+          description: Key bullish/bearish factors
+        recommendation:
+          type: string
+          description: Buy, Hold, or Sell recommendation
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - ticker
+        - companyName
+        - successRatePercent
+        - riskLevel
+        - sentiment
+        - profitScenario
+        - lossScenario
+        - summary
+        - keyFactors
+        - recommendation
+        - createdAt
+
+    Scenario:
+      type: object
+      properties:
+        label:
+          type: string
+        percentChange:
+          type: number
+        description:
+          type: string
+      required:
+        - label
+        - percentChange
+        - description
+
+    StockSearchResult:
+      type: object
+      properties:
+        ticker:
+          type: string
+        name:
+          type: string
+        sector:
+          type: string
+      required:
+        - ticker
+        - name
+        - sector
+
+    PopularStock:
+      type: object
+      properties:
+        ticker:
+          type: string
+        name:
+          type: string
+        sector:
+          type: string
+        description:
+          type: string
+      required:
+        - ticker
+        - name
+        - sector
+        - description
+
+    WatchlistItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        companyName:
+          type: string
+        addedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - ticker
+        - companyName
+        - addedAt
+
+    AddWatchlistItemBody:
+      type: object
+      properties:
+        ticker:
+          type: string
+        companyName:
+          type: string
+      required:
+        - ticker
+        - companyName
+
+    AnalysisSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        companyName:
+          type: string
+        successRatePercent:
+          type: number
+        riskLevel:
+          type: string
+        sentiment:
+          type: string
+        recommendation:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - ticker
+        - companyName
+        - successRatePercent
+        - riskLevel
+        - sentiment
+        - recommendation
+        - createdAt
+
+    AnalysisStats:
+      type: object
+      properties:
+        totalAnalyses:
+          type: integer
+        avgSuccessRate:
+          type: number
+        bullishCount:
+          type: integer
+        bearishCount:
+          type: integer
+        neutralCount:
+          type: integer
+        mostAnalyzedTicker:
+          type: ["string", "null"]
+      required:
+        - totalAnalyses
+        - avgSuccessRate
+        - bullishCount
+        - bearishCount
+        - neutralCount
+        - mostAnalyzedTicker
+
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
