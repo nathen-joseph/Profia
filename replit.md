@@ -1,8 +1,8 @@
-# StockSight AI
+# profia
 
 ## Overview
 
-An AI-powered stock investment analyzer that checks profit/loss possibilities and success rates for any stock ticker. Users can search for stocks, get detailed AI analysis, and manage a watchlist.
+profia is an AI-powered stock investment analyzer that checks profit/loss possibilities and success rates for stock tickers. Users can search for stocks, get AI analysis, and manage a watchlist.
 
 ## Stack
 

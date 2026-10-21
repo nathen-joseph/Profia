@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "Stock Investment Analyzer"
+title = "profia"
 version = "1.0.0"
 id = "artifacts/stock-analyzer"
 router = "path"

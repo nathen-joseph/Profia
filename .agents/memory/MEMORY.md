@@ -1,0 +1,1 @@
+- [profia branding](profia-branding.md) — use “profia” as the product name across user-facing app surfaces.

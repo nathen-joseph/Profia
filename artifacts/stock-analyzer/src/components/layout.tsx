@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground">
               <TrendingUp size={20} strokeWidth={2.5} />
             </div>
-            <span className="text-xl font-bold tracking-tight">StockSight AI</span>
+            <span className="text-xl font-bold tracking-tight">profia</span>
           </div>
         </div>
 
