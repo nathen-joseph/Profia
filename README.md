@@ -53,7 +53,7 @@ Built with a modern web development stack. See `package.json` for the project's 
 
 ## Live Demo
 
-[Try Profia on Replit](https://stock-success-checker--nathenjoseph200.replit.app)
+[Try Profia (https://stock-success-checker--nathenjoseph200.replit.app)
 
 ## Purpose
 
